@@ -7,6 +7,7 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const userRouter = require('./routers/users');
 const cardRouter = require('./routers/cards');
+const { login, createUser } = require('./controllers/userController')
 
 app.use(bodyParser.json());
 
@@ -28,6 +29,10 @@ app.use((req, res, next) => {
 app.use('/', userRouter);
 
 app.use('/', cardRouter);
+
+app.post('/signin', login);
+
+app.post('/signup', createUser);
 
 app.use((req, res) => {
   res.status(404).send({ message: 'Requested Resource not found' });

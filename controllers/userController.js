@@ -1,5 +1,7 @@
 const StatusCodes = require('http-status-codes');
 
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 
 function getUsers(req, res) {
@@ -21,10 +23,11 @@ function getOneUser(req, res) {
 }
 
 function createUser(req, res) {
-  const { name, about, avatar } = req.body;
+  const { name, about, avatar, email, password} = req.body;
   return User.countDocuments({})
-    .then((_id) => User.create({
-      name, about, avatar, _id,
+    .then((bcrypt.hash(password, 10))
+    .then((hash, _id) => User.create({
+      name, about, avatar, email, password: hash, _id,
     }))
     .then((user) => res.status(StatusCodes.OK).send(user))
     .catch((err) => {
@@ -37,15 +40,28 @@ function createUser(req, res) {
 }
 
 function updateUser(req, res) {
-  return User.findByIdAndUpdate(req.params._id, { name: req.body.name, about: req.body.about }
+  return User.findByIdAndUpdate(req.params._id, { name: req.body.name, about: req.body.about })
     .then((user) => res.status(StatusCodes.OK).send(user))
-    .catch(res.status(StatusCodes.INTERNAL_SERVER_ERROR).send({ message: 'Internal server error' })));
+    .catch(res.status(StatusCodes.INTERNAL_SERVER_ERROR).send({ message: 'Internal server error' }));
 }
 
 function updateUserAvatar(req, res) {
-  return User.findByIdAndUpdate(req.params._id, { avatar: req.body.avatar }
+  return User.findByIdAndUpdate(req.params._id, { avatar: req.body.avatar })
     .then((user) => res.status(StatusCodes.OK).send(user))
-    .catch(res.status(StatusCodes.INTERNAL_SERVER_ERROR).send({ message: 'Internal server error' })));
+    .catch(res.status(StatusCodes.INTERNAL_SERVER_ERROR).send({ message: 'Internal server error' }));
+}
+
+function login(req, res) {
+  return User.findUserByCredentials({ email: req.body.email, password: req.body.password })
+
+  .then((user) => {
+    const token = jwt.sign({ _id: user._id }, { expiresIn: '7d' });
+    res.cookie('token', token, { httpOnly: true });
+    res.send({ token });
+  })
+  .catch((err) => {
+    res.status(401).send({ message: err.message });
+  });
 }
 
 module.exports = {
@@ -54,4 +70,5 @@ module.exports = {
   createUser,
   updateUser,
   updateUserAvatar,
+  login,
 };

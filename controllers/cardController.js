@@ -23,7 +23,10 @@ function createCard(req, res) {
 
 function deleteCard(req, res) {
   const { id } = req.params.cardId;
-  return Card.deleteOne(id)
+  if (card.owner !== req.user._id) {
+    res.status(StatusCodes.BAD_REQUEST).send({ message: 'You are not authorized to delete this card' });
+  } else {
+    return Card.deleteOne(id)
     .then((card) => res.status(StatusCodes.OK).send({ card, message: 'Card has been deleted' }))
     .catch((err) => {
       if (err.name === 'CastError') {
@@ -32,6 +35,7 @@ function deleteCard(req, res) {
         res.status(StatusCodes.INTERNAL_SERVER_ERROR).send({ message: 'Internal server error' });
       }
     });
+  }
 }
 
 function addCardLike(req, res) {

@@ -3,6 +3,7 @@ const StatusCodes = require('http-status-codes');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
+const user = require('../models/user');
 
 function getUsers(req, res) {
   return User.find({})
@@ -40,15 +41,27 @@ function createUser(req, res) {
 }
 
 function updateUser(req, res) {
-  return User.findByIdAndUpdate(req.params._id, { name: req.body.name, about: req.body.about })
+  if (req.params._id !== user._id) {
+    res.status(StatusCodes.BAD_REQUEST).send({ message: 'You are not authorized to delete this card' });
+
+  } else {
+    return User.findByIdAndUpdate(req.params._id, { name: req.body.name, about: req.body.about })
     .then((user) => res.status(StatusCodes.OK).send(user))
     .catch(res.status(StatusCodes.INTERNAL_SERVER_ERROR).send({ message: 'Internal server error' }));
+  }
+
 }
 
 function updateUserAvatar(req, res) {
-  return User.findByIdAndUpdate(req.params._id, { avatar: req.body.avatar })
+  if (req.params._id !== user._id) {
+    res.status(StatusCodes.BAD_REQUEST).send({ message: 'You are not authorized to delete this card' });
+
+  } else {
+    return User.findByIdAndUpdate(req.params._id, { avatar: req.body.avatar })
     .then((user) => res.status(StatusCodes.OK).send(user))
     .catch(res.status(StatusCodes.INTERNAL_SERVER_ERROR).send({ message: 'Internal server error' }));
+  }
+
 }
 
 function login(req, res) {

@@ -1,81 +1,84 @@
-const StatusCodes = require('http-status-codes');
-
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
-const user = require('../models/user');
+const BadRequestError = require('../middlewares/errors/BadRequestError');
+const NotFoundError = require('../middlewares/errors/NotFoundError');
+const ForbiddenError = require('../middlewares/errors/ForbiddenError');
+const UnauthorizedError = require('../middlewares/errors/UnauthorizedError');
 
-function getUsers(req, res) {
+function getUsers(req, res, next) {
   return User.find({})
-    .then((users) => res.status(StatusCodes.OK).send(users))
-    .catch((err) => res.status(StatusCodes.BAD_REQUEST).send(err));
+    .then((users) => res.send(users))
+    .catch(next);
 }
 
-function getOneUser(req, res) {
+function getOneUser(req, res, next) {
   return User.findById({ _id: req.params._id })
-    .then((user) => res.status(StatusCodes.OK).send(user))
-    .catch((err) => {
-      if (err.name === 'DocumentNotFoundError') {
-        res.status(StatusCodes.NOT_FOUND).send({ message: 'User ID not found.' });
-      } else {
-        res.status(StatusCodes.BAD_REQUEST).send(err);
-      }
-    });
-}
+  .then((user) => {
+    if (!user) {
+      throw new NotFoundError('User ID not found');
+    }
+    res.send(user);
+  })
+  .catch(next);
+};
 
-function createUser(req, res) {
-  const { name, about, avatar, email, password} = req.body;
+function createUser(req, res, next) {
+  const { email, password, name, about, avatar } = req.body;
+  if (!password || !email) {
+    throw new BadRequestError('User validation failed');
+  }
   return User.countDocuments({})
-    .then((bcrypt.hash(password, 10))
+    .then(bcrypt.hash(password, 10))
     .then((hash, _id) => User.create({
       name, about, avatar, email, password: hash, _id,
     }))
-    .then((user) => res.status(StatusCodes.OK).send(user))
-    .catch((err) => {
-      if (err.name === 'ValidationError') {
-        res.status(StatusCodes.BAD_REQUEST).send({ message: 'User validation failed' });
-      } else {
-        res.status(StatusCodes.INTERNAL_SERVER_ERROR).send({ message: 'Internal server error' });
+    .then((user) => {
+      if (!user) {
+        throw new BadRequestError('User validation failed');
+      } res.send(user);
+    })
+    .catch(next);
+};
+
+function updateUser(req, res, next) {
+  return User.findByIdAndUpdate(req.params._id, { name: req.body.name, about: req.body.about })
+    .then((user) => {
+      if (!user) {
+        throw new NotFoundError('User not found');
+      } if (req.params._id !== user._id) {
+        throw new ForbiddenError('You are not authorized to update this user');
       }
-    });
-}
+      res.send(user);
+    })
+    .catch(next);
+};
 
-function updateUser(req, res) {
-  if (req.params._id !== user._id) {
-    res.status(StatusCodes.BAD_REQUEST).send({ message: 'You are not authorized to delete this card' });
+function updateUserAvatar(req, res, next) {
+  return User.findByIdAndUpdate(req.params._id, { avatar: req.body.avatar })
+    .then((user) => {
+      if (!user) {
+        throw new NotFoundError('User not found');
+      } if (req.params._id !== user._id) {
+        throw new ForbiddenError('You are not authorized to update this avatar');
+      }
+      res.send(user);
+    })
+    .catch(next);
+};
 
-  } else {
-    return User.findByIdAndUpdate(req.params._id, { name: req.body.name, about: req.body.about })
-    .then((user) => res.status(StatusCodes.OK).send(user))
-    .catch(res.status(StatusCodes.INTERNAL_SERVER_ERROR).send({ message: 'Internal server error' }));
-  }
-
-}
-
-function updateUserAvatar(req, res) {
-  if (req.params._id !== user._id) {
-    res.status(StatusCodes.BAD_REQUEST).send({ message: 'You are not authorized to delete this card' });
-
-  } else {
-    return User.findByIdAndUpdate(req.params._id, { avatar: req.body.avatar })
-    .then((user) => res.status(StatusCodes.OK).send(user))
-    .catch(res.status(StatusCodes.INTERNAL_SERVER_ERROR).send({ message: 'Internal server error' }));
-  }
-
-}
-
-function login(req, res) {
+function login(req, res, next) {
   return User.findUserByCredentials({ email: req.body.email, password: req.body.password })
-
-  .then((user) => {
-    const token = jwt.sign({ _id: user._id }, { expiresIn: '7d' });
-    res.cookie('token', token, { httpOnly: true });
-    res.send({ token });
-  })
-  .catch((err) => {
-    res.status(401).send({ message: err.message });
-  });
-}
+    .then((user) => {
+      if (!user) {
+        throw new UnauthorizedError('Incorrect email or password');
+      }
+      const token = jwt.sign({ _id: user._id }, { expiresIn: '7d' });
+      res.cookie('token', token, { httpOnly: true });
+      res.send({ token });
+    })
+    .catch(next);
+};
 
 module.exports = {
   getUsers,

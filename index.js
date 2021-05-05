@@ -9,6 +9,7 @@ const userRouter = require('./routers/users');
 const cardRouter = require('./routers/cards');
 const { login, createUser } = require('./controllers/userController');
 const auth = require('./middlewares/auth');
+const NotFoundError = require('./middlewares/errors/NotFoundError');
 
 app.use(bodyParser.json());
 
@@ -31,7 +32,13 @@ app.use('/', userRouter);
 app.use('/', cardRouter);
 
 app.use((req, res) => {
-  res.status(404).send({ message: 'Requested Resource not found' });
+  throw new NotFoundError('Requested resource not found');
+});
+
+app.use(errors())
+app.use((err, req, res, next) => {
+  const { statusCode = 500, message } = err;
+  res.status(statusCode).send({ message: statusCode === 500 ? 'An error occurred on the server' : message });
 });
 
 app.listen(PORT, () => {

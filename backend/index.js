@@ -10,6 +10,8 @@ const cardRouter = require('./routers/cards');
 const { login, createUser } = require('./controllers/userController');
 const auth = require('./middlewares/auth');
 const NotFoundError = require('./middlewares/errors/NotFoundError');
+const { celebrate, Joi, errors } = require('celebrate');
+const { requestLogger, errorLogger } = require('./middlewares/logger');
 
 app.use(bodyParser.json());
 
@@ -21,9 +23,24 @@ mongoose.connect('mongodb://localhost:27017/aroundb', {
 
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.post('/signin', login);
+app.use(requestLogger);
 
-app.post('/signup', createUser);
+app.post('/signin', celebrate({
+  body: Joi.object().keys({
+    email: Joi.string().required().email(),
+    password: Joi.string().required(),
+  }),
+}), login);
+
+app.post('/signup', celebrate({
+  body: Joi.object().keys({
+    name: Joi.string().min(2).max(30),
+    about: Joi.string().min(2).max(30),
+    avatar: Joi.string().uri(),
+    email: Joi.string().required().email(),
+    password: Joi.string().required(),
+  }),
+}), createUser);
 
 app.use(auth);
 
@@ -35,7 +52,10 @@ app.use((req, res) => {
   throw new NotFoundError('Requested resource not found');
 });
 
-app.use(errors())
+app.use(errorLogger);
+
+app.use(errors());
+
 app.use((err, req, res, next) => {
   const { statusCode = 500, message } = err;
   res.status(statusCode).send({ message: statusCode === 500 ? 'An error occurred on the server' : message });

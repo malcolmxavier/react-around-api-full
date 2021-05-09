@@ -12,7 +12,7 @@ router.get('/users/me', celebrate({
   body: Joi.object().keys({
     email: Joi.string().required().email(),
   }),
-}), getCurrentUser);
+}), getOneUser);
 
 router.get('/users/:id', celebrate({
   params: Joi.object().keys({
@@ -24,7 +24,7 @@ router.patch('/users/me/avatar', celebrate({
   body: Joi.object().keys({
     avatar: Joi.string().required().uri(),
   }),
-}), updateAvatar);
+}), updateUserAvatar);
 
 router.patch('/users/me', celebrate({
   body: Joi.object().keys({

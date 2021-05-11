@@ -10,4 +10,5 @@ Improvements to code, to increase efficiency and adherence to specifications pro
 
 This repository contains the full API of "Around the U.S." project that features user authorization and user registration and handles cards and users.
 * [https://github.com/malcolmxavier/react-around-api-full](https://github.com/malcolmxavier/react-around-api-full)
-* a link to the website that hosts your API.
+* [https://www.malcolmxavier.students.nomoreparties.site/](https://www.malcolmxavier.students.nomoreparties.site/)
+* [http://20.55.99.166/](http://20.55.99.166/)

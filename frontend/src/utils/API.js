@@ -79,7 +79,7 @@ class API {
   }
 
   const api = new API({
-    baseUrl: "https://api.malcolmxavier.students.nomoreparties.site",
+    baseURL: "https://api.malcolmxavier.students.nomoreparties.site",
     headers: {
       'Accept': 'application/json',
       'Content-Type': 'application/json',

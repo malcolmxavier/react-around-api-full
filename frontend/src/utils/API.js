@@ -79,11 +79,12 @@ class API {
   }
 
   const api = new API({
-    baseURL: "https://around.nomoreparties.co/v1/group-3",
+    baseUrl: "https://api.malcolmxavier.students.nomoreparties.site",
     headers: {
-      authorization: "bfb84dd3-54e8-4642-a5bf-7fe819e5fd4b",
-      "Content-Type": "application/json"
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`,
     }
-  });
+  }, [token]);
   
   export {api};

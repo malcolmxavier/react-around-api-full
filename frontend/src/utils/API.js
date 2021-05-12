@@ -77,6 +77,7 @@ class API {
       .then(res => res.ok ? res.json() : Promise.reject(res.status + ' Error: ' + res.statusText))
     };
   }
+  const token = localStorage.getItem('jwt');
 
   const api = new API({
     baseURL: "https://api.malcolmxavier.students.nomoreparties.site",
@@ -85,6 +86,6 @@ class API {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${token}`,
     }
-  }, [token]);
+  });
   
   export {api};

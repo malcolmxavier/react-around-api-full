@@ -1,23 +1,23 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "737471340d9db0dbdb4741f8722fe730",
+    "revision": "9a4bebaf5eb5749f20eeaabace385c94",
     "url": "/react-around-auth/index.html"
   },
   {
-    "revision": "c5fc8bfc90f7bf2316c1",
-    "url": "/react-around-auth/static/css/main.2dce8584.chunk.css"
+    "revision": "0e5bc56bf9e621d983b1",
+    "url": "/react-around-auth/static/css/main.a5c60b1a.chunk.css"
   },
   {
-    "revision": "b246be1ee62be0853a9a",
-    "url": "/react-around-auth/static/js/2.a2832eff.chunk.js"
+    "revision": "633d6c488543c06cf34b",
+    "url": "/react-around-auth/static/js/2.3f133732.chunk.js"
   },
   {
     "revision": "c64c486544348f10a6d6c716950bc223",
-    "url": "/react-around-auth/static/js/2.a2832eff.chunk.js.LICENSE.txt"
+    "url": "/react-around-auth/static/js/2.3f133732.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "c5fc8bfc90f7bf2316c1",
-    "url": "/react-around-auth/static/js/main.5dc31435.chunk.js"
+    "revision": "0e5bc56bf9e621d983b1",
+    "url": "/react-around-auth/static/js/main.eb08a5d9.chunk.js"
   },
   {
     "revision": "5f3478028a5dc90c89ef",

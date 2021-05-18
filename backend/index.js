@@ -12,6 +12,9 @@ const auth = require('./middlewares/auth');
 const NotFoundError = require('./middlewares/errors/NotFoundError');
 const { celebrate, Joi, errors } = require('celebrate');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
+const cors = require('cors');
+
+app.use(cors());
 
 app.use(bodyParser.json());
 

@@ -36,12 +36,10 @@ function App() {
 
   React.useEffect(() => {
     const jwt = localStorage.getItem('jwt');
-    console.log('jwt: ' + jwt);
 
     if (jwt) {
       auth.getContent(jwt)
       .then((res) => {
-        console.log(res)
         const userData = {username: res.username, email: res.email}
 
         setIsLoggedIn(true);

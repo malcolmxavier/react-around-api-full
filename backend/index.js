@@ -57,7 +57,7 @@ app.use('/', userRouter);
 
 app.use('/', cardRouter);
 
-app.use((req, res) => {
+app.use('*', (req, res) => {
   throw new NotFoundError('Requested resource not found');
 });
 
@@ -72,5 +72,5 @@ app.use((err, req, res, next) => {
 });
 
 app.listen(PORT, () => {
-  // console.log('Server is live!');
+  console.log(`App is listening at PORT ${PORT}`);
 });

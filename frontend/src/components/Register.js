@@ -15,6 +15,7 @@ function Register(props) {
 
     function handleSubmit(e) {
         e.preventDefault();
+        console.log(email, password);
         props.handleSignup(email, password);
     }
 

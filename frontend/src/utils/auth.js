@@ -1,7 +1,6 @@
 export const BASE_URL = 'https://api.malcolmxavier.students.nomoreparties.site';
 
 export const register = (email, password) => {
-    console.log(email, password);
     return fetch(`${BASE_URL}/signup`, {
         method: 'POST',
         headers: {

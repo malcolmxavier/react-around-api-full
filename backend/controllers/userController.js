@@ -27,7 +27,6 @@ function createUser(req, res, next) {
   const { email, password, name, about, avatar } = req.body;
   // console.log (req.body);
   if (!password || !email) {
-    console.log(email, password);
     throw new BadRequestError('User validation failed');
   }
   return User.countDocuments({})
@@ -36,6 +35,7 @@ function createUser(req, res, next) {
       name, about, avatar, email, password: hash, _id,
     }))
     .then((user) => {
+      console.log('user: ', user);
       if (!user) {
         throw new BadRequestError('User validation failed');
       } res.send(user);

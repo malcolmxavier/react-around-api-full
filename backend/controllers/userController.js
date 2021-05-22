@@ -24,7 +24,7 @@ function getOneUser(req, res, next) {
 };
 
 function createUser(req, res, next) {
-  console.log(email, password);
+  // console.log(email, password);
   const { email, password, name, about, avatar } = req.body;
   console.log (req.body);
   if (!password || !email) {

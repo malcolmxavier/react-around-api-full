@@ -29,8 +29,7 @@ function createUser(req, res, next) {
   if (!password || !email) {
     throw new BadRequestError('User validation failed');
   }
-  return User.countDocuments({})
-    .then(bcrypt.hash(password, 10))
+  bcrypt.hash(password, 10)
     .then((hash, _id) => User.create({
       name, about, avatar, email, password: hash, _id,
     }))

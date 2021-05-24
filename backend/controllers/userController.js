@@ -6,6 +6,8 @@ const NotFoundError = require('../middlewares/errors/NotFoundError');
 const ForbiddenError = require('../middlewares/errors/ForbiddenError');
 const UnauthorizedError = require('../middlewares/errors/UnauthorizedError');
 
+const { NODE_ENV, JWT_SECRET } = process.env;
+
 function getUsers(req, res, next) {
   return User.find({})
     .then((users) => res.send(users))
@@ -74,7 +76,7 @@ function login(req, res, next) {
       if (!user) {
         throw new UnauthorizedError('Incorrect email or password');
       }
-      const token = jwt.sign({ _id: user._id }, { expiresIn: '7d' });
+      const token = jwt.sign({ _id: user._id }, NODE_ENV === 'production' ? JWT_SECRET : '91fa3639de7e0b378b04ae3207cca6c084e867d246f529e810764b449872e3ce', { expiresIn: '7d' });
       res.cookie('token', token, { httpOnly: true });
       res.send({ token });
     })

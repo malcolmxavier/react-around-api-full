@@ -15,6 +15,7 @@ function getUsers(req, res, next) {
 }
 
 function getOneUser(req, res, next) {
+  console.log(req, req.body);
   return User.findById({ _id: req.params._id })
   .then((user) => {
     if (!user) {
@@ -27,7 +28,6 @@ function getOneUser(req, res, next) {
 
 function createUser(req, res, next) {
   const { name, about, avatar, email, password } = req.body;
-  // console.log (req.body);
   if (!password || !email) {
     throw new BadRequestError('User validation failed');
   }
@@ -36,7 +36,6 @@ function createUser(req, res, next) {
       name, about, avatar, email, password: hash, _id,
     }))
     .then((user) => {
-      console.log('user: ', user);
       if (!user) {
         throw new BadRequestError('User validation failed');
       } res.send(user);

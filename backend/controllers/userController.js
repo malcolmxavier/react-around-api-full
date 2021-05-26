@@ -15,7 +15,6 @@ function getUsers(req, res, next) {
 }
 
 function getOneUser(req, res, next) {
-  console.log(req, req.body);
   return User.findById({ _id: req.params._id })
   .then((user) => {
     if (!user) {

@@ -8,11 +8,7 @@ const {
 
 router.get('/users', getUsers);
 
-router.get('/users/me', celebrate({
-  body: Joi.object().keys({
-    email: Joi.string().required().email(),
-  }),
-}), getOneUser);
+router.get('/users/me', getOneUser);
 
 router.get('/users/:id', celebrate({
   params: Joi.object().keys({

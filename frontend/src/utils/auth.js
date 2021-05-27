@@ -1,4 +1,4 @@
-export const BASE_URL = 'https://api.malcolmxavier.students.nomoreparties.site';
+export const BASE_URL = process.env.NODE_ENV === 'production' ? "https://api.malcolmxavier.students.nomoreparties.site" : "http://localhost:3000";
 
 export const register = (email, password) => {
     return fetch(`${BASE_URL}/signup`, {

@@ -21,7 +21,7 @@ function createCard(req, res, next) {
       res.send(card);
     })
     .catch(next);
-};
+}
 
 function deleteCard(req, res, next) {
   Card.findByIdAndRemove(req.params.cardId)
@@ -35,7 +35,7 @@ function deleteCard(req, res, next) {
       res.send(card);
     })
     .catch(next);
-};
+}
 
 function addCardLike(req, res, next) {
   const user = req.user._id;
@@ -45,10 +45,11 @@ function addCardLike(req, res, next) {
         throw new BadRequestError('You already like this card');
       }
       Card.findByIdAndUpdate(req.params.cardId, { $addToSet: { likes: user } }, { new: true })
-      .then((card) => res.send(card));
+        // eslint-disable-next-line no-shadow
+        .then((card) => res.send(card));
     })
     .catch(next);
-};
+}
 
 function removeCardLike(req, res, next) {
   const user = req.user._id;
@@ -58,10 +59,11 @@ function removeCardLike(req, res, next) {
         throw new BadRequestError('You already do not like this card');
       }
       Card.findByIdAndUpdate(card._id, { $pull: { likes: user } }, { new: true })
+        // eslint-disable-next-line no-shadow
         .then((card) => res.send(card));
     })
     .catch(next);
-};
+}
 
 module.exports = {
   getCards,

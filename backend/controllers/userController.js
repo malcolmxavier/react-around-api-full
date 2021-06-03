@@ -16,23 +16,25 @@ function getUsers(req, res, next) {
 
 function getOneUser(req, res, next) {
   return User.findById({ _id: req.user._id })
-  .then((user) => {
-    if (!user) {
-      throw new NotFoundError('User ID not found');
-    }
-    res.send(user);
-  })
-  .catch(next);
-};
+    .then((user) => {
+      if (!user) {
+        throw new NotFoundError('User ID not found');
+      }
+      res.send(user);
+    })
+    .catch(next);
+}
 
 function createUser(req, res, next) {
-  const { name, about, avatar, email, password } = req.body;
+  const {
+    name, about, avatar, email, password,
+  } = req.body;
   if (!password || !email) {
     throw new BadRequestError('User validation failed');
   }
   bcrypt.hash(password, 10)
-    .then((hash, _id) => User.create({
-      name, about, avatar, email, password: hash, _id,
+    .then((hash) => User.create({
+      name, about, avatar, email, password: hash,
     }))
     .then((user) => {
       if (!user) {
@@ -40,33 +42,33 @@ function createUser(req, res, next) {
       } res.send(user);
     })
     .catch(next);
-};
+}
 
 function updateUser(req, res, next) {
-  return User.findByIdAndUpdate(req.params._id, { name: req.body.name, about: req.body.about })
+  return User.findByIdAndUpdate(req.user._id, { name: req.user.name, about: req.user.about })
     .then((user) => {
       if (!user) {
         throw new NotFoundError('User not found');
-      } if (req.params._id !== user._id) {
+      } if (req.user._id !== user._id) {
         throw new ForbiddenError('You are not authorized to update this user');
       }
       res.send(user);
     })
     .catch(next);
-};
+}
 
 function updateUserAvatar(req, res, next) {
-  return User.findByIdAndUpdate(req.params._id, { avatar: req.body.avatar })
+  return User.findByIdAndUpdate(req.user._id, { avatar: req.user.avatar })
     .then((user) => {
       if (!user) {
         throw new NotFoundError('User not found');
-      } if (req.params._id !== user._id) {
+      } if (req.user._id !== user._id) {
         throw new ForbiddenError('You are not authorized to update this avatar');
       }
       res.send(user);
     })
     .catch(next);
-};
+}
 
 function login(req, res, next) {
   return User.findUserByCredentials({ email: req.body.email, password: req.body.password })
@@ -79,7 +81,7 @@ function login(req, res, next) {
       res.send({ token });
     })
     .catch(next);
-};
+}
 
 module.exports = {
   getUsers,

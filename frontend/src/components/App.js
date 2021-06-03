@@ -62,7 +62,7 @@ function App() {
       })
       .catch(err => console.log(err));
     }
-  })
+  }, [])
 
   function handleSignup(email, password) {
     auth.register(email, password)

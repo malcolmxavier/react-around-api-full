@@ -27,14 +27,14 @@ function getOneUser(req, res, next) {
 
 function createUser(req, res, next) {
   const {
-    name, about, avatar, email, password,
+    email, password,
   } = req.body;
   if (!password || !email) {
     throw new BadRequestError('User validation failed');
   }
   bcrypt.hash(password, 10)
     .then((hash) => User.create({
-      name, about, avatar, email, password: hash,
+      email, password: hash,
     }))
     .then((user) => {
       if (!user) {

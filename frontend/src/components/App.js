@@ -54,6 +54,9 @@ function App() {
       .then(() => {
         api.getUserInfo()
         .then(res => {
+          if (res.name == null) {
+            debugger;
+          }
           setCurrentUser(res);
         })
       })
@@ -100,6 +103,9 @@ function App() {
     .then(() => {
       api.getUserInfo()
       .then(res => {
+        if (res.name == null) {
+          debugger;
+        }
         setCurrentUser(res);
       })
     })
@@ -159,6 +165,9 @@ function App() {
   function handleUpdateAvatar(avatar) {
     api.setUserAvatar(avatar)
     .then(() => {
+      if (currentUser.name == null) {
+        debugger;
+      }
       setCurrentUser({
       avatar,
       name: currentUser.name,
@@ -174,6 +183,9 @@ function App() {
   function handleUpdateUser({name, about}) {
     api.setUserInfo(name, about)
     .then(() => {
+      if (name == null) {
+        debugger;
+      }
       setCurrentUser({
       avatar: currentUser.avatar,
       name,

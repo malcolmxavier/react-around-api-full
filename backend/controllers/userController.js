@@ -71,7 +71,8 @@ function updateUserAvatar(req, res, next) {
 }
 
 function login(req, res, next) {
-  return User.findUserByCredentials({ email: req.body.email, password: req.body.password })
+  const { email, password } = req.body;
+  return User.findUserByCredentials({ email, password })
     .then((user) => {
       if (!user) {
         throw new UnauthorizedError('Incorrect email or password');

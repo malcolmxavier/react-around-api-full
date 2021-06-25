@@ -62,7 +62,7 @@ function App() {
       })
       .catch(err => console.log(err));
     }
-  }, [])
+  }, [history])
 
   function handleSignup(email, password) {
     auth.register(email, password)
@@ -92,6 +92,9 @@ function App() {
       }
     }) 
     .then(() => {
+      api.setToken();
+    })
+    .then(() => {
       api.getCardList()
       .then(res => {
         setCards(res);
@@ -104,6 +107,8 @@ function App() {
       })
     })
     .then(() => {
+      const userData = {username: currentUser.name, email}
+
       setIsLoggedIn(true);
       setUserData(userData);
       history.push('/');

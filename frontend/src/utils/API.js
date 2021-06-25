@@ -3,6 +3,10 @@ class API {
     this._baseURL = baseURL;
     this._headers = headers;
   }
+  setToken() {
+    const token = localStorage.getItem('jwt');
+    this._headers.Authorization = `Bearer ${token}`;
+  }
 
   getUserInfo() {
     return fetch(this._baseURL + '/users/me', {
